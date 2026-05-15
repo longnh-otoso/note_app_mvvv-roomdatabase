@@ -22,9 +22,10 @@ fun NoteListItem(note : Note){
     Card (
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = androidx.compose.ui.graphics.Color(note.color)
-        ),
-        border = BorderStroke(1.dp,Color.Black)
+            containerColor = Color(note.color)),
+        border = BorderStroke(1.dp,Color.Black),
+        modifier = Modifier.padding(8.dp)
+
 
 
 

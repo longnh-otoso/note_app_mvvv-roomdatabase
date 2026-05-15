@@ -20,58 +20,77 @@ import com.example.promot.roomdb.Note
 import com.example.promot.viewmodel.NoteViewModel
 
 @Composable
-fun DisplayDialog( viewModel: NoteViewModel ){
+fun DisplayDialog( viewModel: NoteViewModel,
+                   showDialog: Boolean ,
+                   onDismiss: () -> Unit){
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var selectedcolor by remember { mutableStateOf (Color.Blue) }
 
 
-    AlertDialog(
-        onDismissRequest = {  },
+    if (showDialog){
 
-        title = { Text(text = "Enter Note") },
-        text = {
-            Column {
-                TextField(
-                    value = title,
-                    onValueChange = { title = it },
-                    label = { Text("Title") }
+        AlertDialog(
+            onDismissRequest = onDismiss,
 
-                )
+            title = { Text(text = "Enter Note") },
+            text = {
+                Column {
+                    TextField(
+                        value = title,
+                        onValueChange = { title = it },
+                        label = { Text("Title") }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    )
 
-                TextField(
-                    value = description,
-                    onValueChange = { description = it },
-                    label = { Text("Description") }
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    TextField(
+                        value = description,
+                        onValueChange = { description = it },
+                        label = { Text("Description") }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    MyColorPicker(
+                        selectedColor = selectedcolor,
+                        onColorSelected = { selectedcolor = it }
+                    )
 
 
 
-            }
-        },
-        confirmButton = {
-            Button(onClick = {
-                val note = Note(
-                    0,
-                    title = title,
-                    description = description,
-                    color = selectedcolor.toArgb()
-                )
-            }){
-                Text(text = "Save")
-            }
+                }
+            },
+            confirmButton = {
+                Button(onClick =  {
+                    if (title.isNotBlank() || description.isNotBlank()){
+                        val note = Note(
+                            0,
+                            title = title,
+                            description = description,
+                            color = selectedcolor.toArgb()
+                        )
+                        viewModel.insert(note)
 
-        },
-        dismissButton = {
-            Button(onClick = {}){
-                Text(text = "Cancel")
-            }
+                        onDismiss()
+                    }
 
-        },
-    )
+
+                }){
+                    Text(text = "Save")
+                }
+
+            },
+            dismissButton = {
+                Button(onClick = onDismiss ){
+                    Text(text = "Cancel")
+                }
+
+            },
+        )
+
+    }
+
 
 }
